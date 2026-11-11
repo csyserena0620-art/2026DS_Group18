@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Search</title>
+    <style>
+        :root {
+            --bg: #070b16;
+            --panel: #101a2c;
+            --primary: #ffffff;
+            --primary-dark: #e0fbff;
+            --accent: #39d9f2;
+            --text: #e8f1ff;
+            --muted: #9aacc5;
+            --border: #263a57;
+            --shadow: 0 20px 60px rgba(0, 0, 0, 0.42), 0 0 34px rgba(38, 190, 230, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background:
+                radial-gradient(ellipse at 15% 8%, rgba(20, 104, 170, 0.2), transparent 36%),
+                radial-gradient(ellipse at 88% 22%, rgba(80, 42, 160, 0.16), transparent 32%),
+                var(--bg);
+            color: var(--text);
+        }
+
+        .page {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 36px 20px 60px;
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: clamp(2rem, 5vw, 3.4rem);
+            letter-spacing: 0.05em;
+            color: var(--primary);
+            text-shadow: 0 0 26px rgba(57, 217, 242, 0.3);
+        }
+
+        .brand p {
+            margin: 8px 0 0;
+            color: var(--muted);
+        }
+
+        .search-card {
+            background: linear-gradient(145deg, rgba(19, 32, 53, 0.98), rgba(12, 20, 36, 0.98));
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        form {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        input[type="text"] {
+            flex: 1 1 520px;
+            min-width: 220px;
+            padding: 16px 18px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            background: #080e1c;
+            color: var(--text);
+            font-size: 1rem;
+            outline: none;
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.16), inset 0 0 12px rgba(0, 0, 0, 0.2);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        button:disabled {
+            opacity: 0.65;
+            cursor: wait;
+            transform: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1), 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        input[type="text"]::placeholder {
+            color: #72849d;
+        }
+
+        input[type="text"]:-webkit-autofill,
+        input[type="text"]:-webkit-autofill:hover,
+        input[type="text"]:-webkit-autofill:focus {
+            -webkit-text-fill-color: var(--text);
+            -webkit-box-shadow: 0 0 0 1000px #080e1c inset, 0 0 12px rgba(255, 255, 255, 0.16);
+            transition: background-color 9999s ease-out;
+        }
+
+        button {
+            padding: 16px 26px;
+            border: none;
+            border-radius: 14px;
+            background: var(--primary);
+            color: #0b1422;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(57, 217, 242, 0.16);
+            transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 0 26px rgba(57, 217, 242, 0.28);
+        }
+
+        .status {
+            margin-top: 18px;
+            color: var(--muted);
+            min-height: 24px;
+        }
+
+        .results {
+            margin-top: 28px;
+            display: grid;
+            gap: 16px;
+        }
+
+        .result-item {
+            border: 1px solid #263a57;
+            background: linear-gradient(135deg, #142238, #101a2c);
+            border-radius: 16px;
+            padding: 18px 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22), 0 0 18px rgba(57, 217, 242, 0.1);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+        }
+
+        .result-item:hover {
+            border-color: rgba(57, 217, 242, 0.55);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28), 0 0 26px rgba(57, 217, 242, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .result-item a {
+            color: #679bff;
+            font-weight: 700;
+            font-size: 1.08rem;
+            text-decoration: none;
+        }
+
+        .result-item a:hover {
+            color: #91b5ff;
+            text-decoration: underline;
+        }
+
+        .result-url {
+            margin-top: 6px;
+            font-size: 0.8rem;
+            color: #70d6c2;
+            word-break: break-all;
+        }
+
+        .result-snippet {
+            margin-top: 10px;
+            line-height: 1.65;
+            color: var(--text);
+        }
+
+        .empty {
+            padding: 18px;
+            border-radius: 12px;
+            background: #111d30;
+            color: var(--muted);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="brand">
+            <h1>Web Search</h1>
+            <p>Find relevant information from across the web.</p>
+        </div>
+
+        <div class="search-card">
+            <form id="searchForm">
+                <input id="queryInput" type="text" placeholder="Enter a search query, e.g., Spring Boot tutorial" aria-label="Search query" required />
+                <button id="searchButton" type="submit">Search</button>
+            </form>
+            <div id="status" class="status"></div>
+
+            <div id="results" class="results" aria-live="polite"></div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('searchForm');
+        const queryInput = document.getElementById('queryInput');
+        const resultsContainer = document.getElementById('results');
+        const statusElement = document.getElementById('status');
+        const searchButton = document.getElementById('searchButton');
+
+        function showEmpty(message) {
+            const empty = document.createElement('div');
+            empty.className = 'empty';
+            empty.textContent = message;
+            resultsContainer.replaceChildren(empty);
+        }
+
+        form.addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const query = queryInput.value.trim();
+
+            if (!query) {
+                statusElement.textContent = 'Enter a search query to continue.';
+                showEmpty('Type a query above to see results.');
+                return;
+            }
+
+            statusElement.textContent = 'Searching...';
+            resultsContainer.replaceChildren();
+            searchButton.disabled = true;
+
+            try {
+                const response = await fetch(`/api/search?query=${encodeURIComponent(query)}`);
+                if (!response.ok) {
+                    throw new Error('Search failed');
+                }
+
+                const data = await response.json();
+                const items = Array.isArray(data.results) ? data.results : [];
+
+                if (!items.length) {
+                    statusElement.textContent = 'No results found. Check that the Tavily API key is configured and search is enabled.';
+                    showEmpty('No search results to display.');
+                    return;
+                }
+
+                statusElement.textContent = `Found ${items.length} results.`;
+                const cards = items.map(item => {
+                    let resultUrl;
+                    try {
+                        resultUrl = new URL(item.url);
+                    } catch {
+                        return null;
+                    }
+                    if (resultUrl.protocol !== 'http:' && resultUrl.protocol !== 'https:') {
+                        return null;
+                    }
+
+                    const card = document.createElement('article');
+                    card.className = 'result-item';
+
+                    const link = document.createElement('a');
+                    link.href = resultUrl.href;
+                    link.target = '_blank';
+                    link.rel = 'noopener noreferrer';
+                    link.textContent = item.title || item.url;
+
+                    const url = document.createElement('div');
+                    url.className = 'result-url';
+                    url.textContent = resultUrl.href;
+
+                    const snippet = document.createElement('div');
+                    snippet.className = 'result-snippet';
+                    snippet.textContent = item.content || 'Open this link to view more information.';
+
+                    card.append(link, url, snippet);
+                    return card;
+                });
+                const validCards = cards.filter(Boolean);
+                if (!validCards.length) {
+                    statusElement.textContent = 'No valid links were found in the search results.';
+                    showEmpty('No valid search results to display.');
+                    return;
+                }
+                resultsContainer.replaceChildren(...validCards);
+                statusElement.textContent = `Found ${validCards.length} results.`;
+            } catch (error) {
+                console.error(error);
+                statusElement.textContent = 'Search failed. Please try again later.';
+                showEmpty('Please try again and make sure the server is running.');
+            } finally {
+                searchButton.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
