@@ -1,4 +1,4 @@
-# HW8 Group 8 — Tavily Search
+# HW8 Group 18 — Tavily Search
 
 This Spring Boot application provides a web page that searches the web with the Tavily Search API and displays each result's title, URL, and content excerpt. The backend keeps the API key out of browser code.
 
